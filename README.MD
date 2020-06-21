@@ -1,7 +1,7 @@
 This php script creates a folder with the last git changed files
 ### You can use it to create patches
 
-Depends on **PHP** (runnable from shell) and is only compatible with **Windows**
+Depends on **PHP** (runnable from shell, with php-ftp) and is only compatible with **Windows**
 
 
 # Installing Bigpatch
