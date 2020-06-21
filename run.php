@@ -91,6 +91,7 @@ foreach ($files as $n => $file) {
       //exclude
       if($resp === false)
         $answers->remember($file, 'e');
+      else echo "Auto excluded: $file\n";
       break;
 
     default:
@@ -103,7 +104,6 @@ foreach ($files as $n => $file) {
 $answers->save();
 echo "\n\n------------------------------------------------------------\n";
 $copy_array = [];
-$accepted_files = array_reverse($accepted_files);
 foreach ($accepted_files as $file) {
   $file_to_copy = "$if\\$file";
   if(!file_exists($file_to_copy)){
@@ -122,4 +122,4 @@ foreach ($copy_array as $file_to_copy => $target) {
   echo "Copying $file_to_copy -> $target\n";
   copy($file_to_copy, "$target");
 }
-echo shell_exec("tree /F $of"), "\nSuccess";
+echo "\nSuccess,\nCAREFULLY CHECK YOUR PATCH FILES BEFORE USE!\n";
