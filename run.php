@@ -2,7 +2,6 @@
 /**
  * Bigpatch CORE
  * 
- * Nessun riferimento ai singoli progetti qui, applica un progetto nuovo su bigpatch.bat
  */
 include('lib.php');
 

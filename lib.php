@@ -1,5 +1,7 @@
 <?php
 
+$GLOBALS['exclude_servers'] = ['.', '..', 'example.server.json'];
+
 class Answers
 {
 
@@ -55,7 +57,7 @@ class FtpServer
 {
     private $connectionID;
     private $ftpSession = false;
-    private $blackList = array('.', '..', 'Thumbs.db');
+    private $blackList = array('.', '..', 'Thumbs.db', '.git');
     public function __construct($ftpHost = "")
     {
         if ($ftpHost != "") $this->connectionID = ftp_connect($ftpHost);
@@ -138,25 +140,47 @@ class FtpServer
 }
 
 function bigpatch_ftp_upload($if, $server)
-{ //TODO: allow server-* to upload on all matching server files
-    $server_file = __DIR__ . "/servers/$server.server.json";
-    if (!file_exists($server_file)) {
-        echo "Unknown server: $server\n";
+{ //server-* search all matching servers
+    $dir = __DIR__ . "\\servers";
+    $valid_servers = [];
+    if(strpos($server, '*')===false)
+        $valid_servers[] = "$dir\\$server.server.json";
+    else{
+        $scan = array_diff(scandir($dir), $GLOBALS['exclude_servers']);
+        $search = str_replace('*', '', $server);
+        foreach($scan as $server_file){
+            if(strpos($server_file, $search)!==false)
+                $valid_servers[] = "$dir\\$server_file";
+        }
+    }
+
+    print_r($valid_servers);
+    if(prompt("Continue with these? [y,n]")!='y'){
+        echo "Aborting multi server upload\n";
         return false;
     }
-    $server_ = json_decode(file_get_contents($server_file), true);
 
-    $ftp = new FtpServer($server_['hostname']);
-    $ftpSession = $ftp->login($server_['username'], $server_['password']);
-    if (!$ftpSession) {
-        echo "Failed to connect.";
-        return false;
+    foreach($valid_servers as $server_file){
+        echo "Using $server_file\n";
+        if (!file_exists($server_file)) {
+            echo "Fatal error: $server not found\n";
+            return false;
+        }
+        $server_ = json_decode(file_get_contents($server_file), true);
+    
+        $ftp = new FtpServer($server_['hostname']);
+        $ftpSession = $ftp->login($server_['username'], $server_['password']);
+        if (!$ftpSession) {
+            echo "Failed to connect.";
+            return false;
+        }
+    
+        $errorList = $ftp->send_recursive_directory($if, $server_['remote_folder']);
+        print_r($errorList);
+    
+        $ftp->disconnect();
     }
-
-    $errorList = $ftp->send_recursive_directory($if, $server_['remote_folder']);
-    print_r($errorList);
-
-    $ftp->disconnect();
+    
 
     return true;
 }
@@ -165,7 +189,7 @@ function bigpatch_ask_server()
 {
     $dir = __DIR__ . '\\servers';
     echo " Listing your servers:\n[$dir]\n\n";
-    $scan = array_diff(scandir($dir), ['.', '..', 'example.server.json']);
+    $scan = array_diff(scandir($dir), $GLOBALS['exclude_servers']);
     $answers = [];
     if (count($scan) == 0)
         die("ERROR: You have not configured any server\n");
@@ -185,8 +209,9 @@ function bigpatch_ask_server()
             echo "> Wrong answer: $answer\n";
         $first = false;
         $answer = prompt('Number of the server? [' . implode(', ', array_keys($answers)) . '] ');
-        if($answer == 0)
+        if(is_numeric($answer) && intval($answer) === 0)
             die("Bye");
-    } while (!isset($answers[$answer]));
-    return $answers[$answer];
+        $is_search = strlen($answer) > 1 && strpos($answer, '*')!==false;
+    } while (!$is_search && !isset($answers[$answer]));
+    return $is_search ? $answer : $answers[$answer];
 }
