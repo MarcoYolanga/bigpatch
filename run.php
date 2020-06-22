@@ -80,5 +80,6 @@ foreach ($copy_array as $file_to_copy => $target) {
 echo "\nSuccess,\nCAREFULLY CHECK YOUR PATCH FILES BEFORE USE!\n";
 if(prompt("Do you want to upload this patch? [y, n] ") != 'y')
   die("Bye\n");
-echo "Uploading $of\n";
-bigpatch_ftp_upload($of, bigpatch_ask_server());
+  echo "Uploading mode. Answer 0 to exit\n";
+while(true)
+  bigpatch_ftp_upload($of, bigpatch_ask_server());

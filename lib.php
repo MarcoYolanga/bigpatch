@@ -107,6 +107,7 @@ class FtpServer
                 $errorList[] = $this->recurse_directory($rootPath, "$localPath/$file", "$remotePath/$file");
                 chdir($localPath);
             } else {
+                echo "Uploading: $localPath/$file --> $remotePath/$file\n";
                 $errorList["$remotePath/$file"] = $this->put_file("$localPath/$file", "$remotePath/$file");
             }
         }
@@ -117,7 +118,7 @@ class FtpServer
     {
         $error = "";
         try {
-            ftp_mkdir($this->connectionID, $remotePath);
+            @ftp_mkdir($this->connectionID, $remotePath);
         } catch (Exception $e) {
             if ($e->getCode() == 2) $error = $e->getMessage();
         }
@@ -183,7 +184,9 @@ function bigpatch_ask_server()
         else
             echo "> Wrong answer: $answer\n";
         $first = false;
-        $answer = prompt('Number of the server? [' . implode(', ', $answers) . '] ');
+        $answer = prompt('Number of the server? [' . implode(', ', array_keys($answers)) . '] ');
+        if($answer == 0)
+            die("Bye");
     } while (!isset($answers[$answer]));
     return $answers[$answer];
 }
