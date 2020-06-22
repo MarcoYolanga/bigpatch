@@ -77,6 +77,7 @@ class FtpServer
     {
         if (!$this->connectionID) throw new Exception("Connection not established.", -1);
         $this->ftpSession = ftp_login($this->connectionID, $ftpUser, $ftpPass);
+        ftp_pasv($this->connectionID, true);
         return $this->ftpSession;
     }
 
