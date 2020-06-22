@@ -4,52 +4,7 @@
  * 
  * Nessun riferimento ai singoli progetti qui, applica un progetto nuovo su bigpatch.bat
  */
-
-class Answers{
-  
-  public $A;
-  private $config_file;
-  public $next_answer;
-
-  function __construct()
-  {
-    $this->config_file = __DIR__."/answers.json";
-    $this->A = [];
-    if(is_file($this->config_file))
-      $this->A = json_decode(file_get_contents($this->config_file), true);
-    else
-      $this->save();
-  }
-
-  function save(){
-    file_put_contents($this->config_file, json_encode($this->A));
-  }
-
-  function do_we_know($key){
-    $resp = isset($this->A[$key]);
-    if($resp)
-      $this->next_answer = $this->A[$key];
-    return $resp;
-  }
-
-  function then_tell_me(){
-    return $this->next_answer;
-  }
-
-  function remember($key, $val){
-    $this->A[$key] = $val;
-  }
-
-}
-
-function prompt($msg){
-  echo $msg;
-  $handle = fopen ("php://stdin","r");
-  $line = trim(fgets($handle));
-
-  fclose($handle);
-  return $line;
-}
+include('lib.php');
 
 $if = $argv[1];
 $of = $argv[2];
@@ -123,3 +78,8 @@ foreach ($copy_array as $file_to_copy => $target) {
   copy($file_to_copy, "$target");
 }
 echo "\nSuccess,\nCAREFULLY CHECK YOUR PATCH FILES BEFORE USE!\n";
+if(prompt("Do you want to upload this patch? [y, n] ") != 'y')
+  die("Bye\n");
+  echo "Uploading mode. Answer 0 to exit\n";
+while(true)
+  bigpatch_ftp_upload($of, bigpatch_ask_server());

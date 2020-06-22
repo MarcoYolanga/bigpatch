@@ -1,0 +1,6 @@
+{
+    "hostname":"ftpServer",
+    "username":"ftpUser",
+    "password":"ftpPassword",
+    "remote_folder":"/mydir"
+}
