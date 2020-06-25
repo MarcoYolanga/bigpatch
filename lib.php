@@ -155,10 +155,13 @@ function bigpatch_ftp_upload($if, $server)
     }
 
     print_r($valid_servers);
-    if(prompt("Continue with these? [y,n]")!='y'){
+    if(prompt("Continue with these? [y,n] ")!='y'){
         echo "Aborting multi server upload\n";
         return false;
     }
+
+    $q_errors = 0;
+    $q_tot_files = 0;
 
     foreach($valid_servers as $server_file){
         echo "Using $server_file\n";
@@ -176,11 +179,30 @@ function bigpatch_ftp_upload($if, $server)
         }
     
         $errorList = $ftp->send_recursive_directory($if, $server_['remote_folder']);
-        print_r($errorList);
+        $with_errors = 0;
+        $tot_files = 0;
+        foreach($errorList as $file => $possible_error){
+            $tot_files++;
+            $q_tot_files++;
+            if(!empty($possible_error)){
+                echo "ERROR: $file: $possible_error\n";
+                $with_errors++;
+                $q_errors++;
+            }
+        }
+        
+        if($with_errors == 0)
+            echo "[$tot_files] OK\n";
+        else
+            echo "[$tot_files] $with_errors errors!\n";
     
         $ftp->disconnect();
     }
     
+    if($q_errors == 0)
+        echo "[$q_tot_files] ALL OK\n";
+    else
+        echo "[$q_tot_files] $q_errors total errors!\n";
 
     return true;
 }

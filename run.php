@@ -15,7 +15,7 @@ $idisk = substr($if, 0, 2);
 
 $git = shell_exec("$idisk && cd \"$if\" && git status --porcelain=v2");
 
-echo "\nBig Patch v1.0\n\nWith git status:\n".shell_exec("$idisk && cd \"$if\" && git status")."\n$git\n\n------------------------------------------------------------\n";
+echo "\nBig Patch v1.1\n\nWith git status:\n".shell_exec("$idisk && cd \"$if\" && git status")."\n$git\n\n------------------------------------------------------------\n";
 
 $git = explode("\n", $git);
 $files = [];
