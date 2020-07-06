@@ -181,24 +181,12 @@ function bigpatch_ftp_upload($if, $server)
         $errorList = $ftp->send_recursive_directory($if, $server_['remote_folder']);
         $with_errors = 0;
         $tot_files = 0;
-        print_r($errorList);
-        /* //TODO: recursively check of errors in $errorList
-        foreach($errorList as $file => $possible_error){
-            $tot_files++;
-            $q_tot_files++;
-            if(count($possible_error) > 0){
-                echo "ERROR: $file: \n";
-                print_r($possible_error);
-                $with_errors++;
-                $q_errors++;
-            }
-        }
-        */
-        
+     /*   
         if($with_errors == 0)
             echo "[$tot_files] OK\n";
         else
             echo "[$tot_files] $with_errors errors!\n";
+    */
     
         $ftp->disconnect();
     }
