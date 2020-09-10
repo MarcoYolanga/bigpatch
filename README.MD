@@ -17,6 +17,6 @@ Configure your **projects** as batch scripts in the projects dir (copying the sa
 ## Running Bigpatch
 After you have modified your code, run **git add .** to stage your edits,  then run **bigpatch**. The script will ask you which Project you want to update, then grabs all the modified files and folders from the project's local directory, asks you to chose which files you want to upload (remembering your choiches for next patches) and then on which server (or more using * wildcard in server selection) you want them uploaded. Finally, you can commit the changes.
 
-# Autoanswers
+## Autoanswers
 Bigpatch will learn your answers never asking them again!
-Delete or edit the generated file **answers.json**, the syntax is {"**name_of_file**":"**answer**"} where answer can be **"e"** = exclude or **a** = add to the next patches
+Unless you delete or edit the generated file **answers.json**, the syntax is {"**name_of_file**":"**answer**"} where answer can be **"e"** = exclude or **a** = add to the next patches
