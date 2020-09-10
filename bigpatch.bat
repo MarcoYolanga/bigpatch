@@ -1,6 +1,6 @@
 @echo off
 echo.
-echo Bigpatch launcher
+echo Bigpatch
 rem don't modify this laucher, goto projects folder to do add your project
 echo.
 SET mypath=%~dp0
