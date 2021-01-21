@@ -1,7 +1,6 @@
-This PHP script creates a folder grouping the  git changed files of your project, and allows you to upload these files to your production ftp server
+This PHP script creates a folder from the  git changed files of your project, and allows you to upload these files to your production ftp server
 
 ## Prerequisites
-- Windows
 - Git available in the cmd
 - PHP available in the cmd
 - The php-ftp extension
