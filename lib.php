@@ -131,6 +131,7 @@ class FtpServer
     {
         $error = "";
         try {
+            //ftp_delete($this->connectionID, $remotePath);
             ftp_put($this->connectionID, $remotePath, $localPath, FTP_BINARY);
         } catch (Exception $e) {
             if ($e->getCode() == 2) $error = $e->getMessage();
@@ -170,27 +171,27 @@ function bigpatch_ftp_upload($if, $server)
             return false;
         }
         $server_ = json_decode(file_get_contents($server_file), true);
-    
+
         $ftp = new FtpServer($server_['hostname']);
         $ftpSession = $ftp->login($server_['username'], $server_['password']);
         if (!$ftpSession) {
             echo "Failed to connect.";
             return false;
         }
-    
+
         $errorList = $ftp->send_recursive_directory($if, $server_['remote_folder']);
         $with_errors = 0;
         $tot_files = 0;
-     /*   
+     /*
         if($with_errors == 0)
             echo "[$tot_files] OK\n";
         else
             echo "[$tot_files] $with_errors errors!\n";
     */
-    
+
         $ftp->disconnect();
     }
-    
+
     if($q_errors == 0)
         echo "[$q_tot_files] ALL OK\n";
     else
